@@ -46,8 +46,12 @@ int Bencoder::bdecode(std::string data)
 				//parse to whatever format needed
 
 			}
-			else if (isdigit(current_token) && data[i + 1] == ':')
+			else if (isdigit(current_token))
 			{
+				char* end;
+				long long length = strtoll(&data[i] , &end, 10);
+
+				//if the number isn't followed by `:`, error 
 
 			}
 			else if (current_token == 'l' || current_token == 'd')
@@ -59,7 +63,7 @@ int Bencoder::bdecode(std::string data)
 	} catch (EXCEPTION ERROR) {
 		// Open error log file and print error message to it
 		std::fstream err_log;
-		err_log.open(ERROR_LOG_FN, std::fstream::out | std::fstream::app);
+		err_log.open("ErrorLog.txt", std::fstream::out | std::fstream::app);
 
 		time_t t = time(0);
 
@@ -94,9 +98,8 @@ int Bencoder::bdecode(std::string data)
 
 long long Bencoder::decode_int(std::string data, int* index)
 {
-	char* end;
 	//get integer from string
-	long long retval = strtoll(&data[*index], &end, 10);
+	long long retval = strtoll(&data[*index], NULL, 10);
 
 	//index now points at `e`
 	*index += count_digits(retval);
