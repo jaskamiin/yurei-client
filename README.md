@@ -1,4 +1,4 @@
-# yurei-client
+# yurei client
 
 Yurei is an implementation of the bittorrent protocol (and corresponding client). Mainly done for self-educational purposes.
 
