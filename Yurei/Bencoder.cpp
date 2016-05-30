@@ -2,22 +2,7 @@
 
 Bencoder::Bencoder()
 {
-	/*load decode function map
-	decode_functions['i'] = &decode_int;
-//	decode_functions['l'] = &decode_list;
-//	decode_functions['d'] = &decode_dict;
-	decode_functions['0'] = &decode_string;
-	decode_functions['1'] = &decode_string;
-	decode_functions['2'] = &decode_string;
-	decode_functions['3'] = &decode_string;
-	decode_functions['4'] = &decode_string;
-	decode_functions['5'] = &decode_string;
-	decode_functions['6'] = &decode_string;
-	decode_functions['7'] = &decode_string;
-	decode_functions['8'] = &decode_string;
-	decode_functions['9'] = &decode_string;
 
-	*///load encode function map
 }
 
 
@@ -74,7 +59,7 @@ int Bencoder::bdecode(std::string data)
 	} catch (EXCEPTION ERROR) {
 		// Open error log file and print error message to it
 		std::fstream err_log;
-		err_log.open("ErrorLog.txt", std::fstream::out | std::fstream::app);
+		err_log.open(ERROR_LOG_FN, std::fstream::out | std::fstream::app);
 
 		time_t t = time(0);
 

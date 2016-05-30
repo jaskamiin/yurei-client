@@ -5,6 +5,8 @@
 
 typedef int EXCEPTION;
 
+#define ERROR_LOG_FN "../ErrorLog.txt"
+
 //return value definitions -- using 10* format for uniqueness...
 #define BOUNDS_ERROR			100
 #define BENCODE_SUCCESS			101
