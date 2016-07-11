@@ -21,19 +21,30 @@
 
 class Client
 {
-private:
-	int sock_init();
-	int sock_quit();
-	int sock_close(SOCKET);
-
-	SOCKET* sockets;
-
+private:	
+	/*TCPSocket Class begin*/
 	class TCPSocket
 	{
 	private:
-		void openSocket(addrinfo*);
-		void setInfo(std::string, int);
-		void setInfo(int);
+
+		/*
+		//Maybe use this struct and shared_ptr for easier memory management... but I'm happy without it now
+		
+		struct addrinfo_delete
+		{
+			void operator()(addrinfo* info) const
+			{
+				freeaddrinfo(info);
+			}
+		};
+		
+		std::unique_ptr<addrinfo, addrinfo_delete> info;
+
+		*/
+
+		void		openSocket(addrinfo*);
+		void		setInfo(std::string, int);
+		void		setInfo(int);
 
 		addrinfo	info;
 
@@ -60,6 +71,13 @@ private:
 		bool receive(char*, int, int);
 		void close();
 	};
+	/*TCPSocket Class end*/
+	
+
+	/*Sockets for incoming and outgoing data*/
+	TCPSocket sockets[2];
+
+
 
 public:
 	Client();
