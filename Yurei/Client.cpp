@@ -134,7 +134,51 @@ std::shared_ptr<Client::TCPSocket> Client::TCPSocket::accept()
 }
 
 
+void Client::TCPSocket::send(const char* data, unsigned len, int flags)
+{
+	const char* buffer = data;
+	int status = 0;
+	int total_sent = 0;
+	int left_to_send = len;
+	
+	while (total_sent < len)
+	{
+		status = ::send(sock, buffer + total_sent, left_to_send, flags);
 
+		if (status == -1) throw 0;
+
+		total_sent += status;
+		left_to_send -= status;
+	}
+}
+
+bool Client::TCPSocket::receive(char* msg, int len, int flags)
+{
+	int status = ::recv(sock, msg, len, flags);
+
+	if (status == -1) throw 0;
+	
+	return status == 0 ? false : true;
+}
+
+
+void Client::TCPSocket::close()
+{
+	if (sockOpen)
+	{
+		int toClose;
+		#ifdef _WIN32
+			toClose = ::closesocket(sock);
+			if (toClose == -1) throw 0;
+			sockOpen = false;
+		#else
+			toClose = ::close(sock);
+			if (toClose == -1) throw 0;
+			sockOpen = false;
+		#endif
+
+	}
+}
 
 /*
 *

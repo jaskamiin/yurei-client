@@ -5,19 +5,19 @@
 
 
 /*Includes for [non] Windows*/
-#ifdef _WIN32
-	#ifndef _WIN32_WINNT
-		#define _WIN32_WINNT 0x0501  /* Windows XP. */
+	#ifdef _WIN32
+		#ifndef _WIN32_WINNT
+			#define _WIN32_WINNT 0x0501  /* Windows XP. */
+		#endif
+		#include <winsock2.h>
+		#include <Ws2tcpip.h>
+		#pragma comment(lib,"ws2_32.lib")
+	#else
+		#include <sys/socket.h>
+		#include <arpa/inet.h>
+		#include <netdb.h>  /* Needed for getaddrinfo() and freeaddrinfo() */
+		#include <unistd.h> /* Needed for close() */
 	#endif
-	#include <winsock2.h>
-	#include <Ws2tcpip.h>
-	#pragma comment(lib,"ws2_32.lib")
-#else
-	#include <sys/socket.h>
-	#include <arpa/inet.h>
-	#include <netdb.h>  /* Needed for getaddrinfo() and freeaddrinfo() */
-	#include <unistd.h> /* Needed for close() */
-#endif
 
 class Client
 {
@@ -37,11 +37,11 @@ private:
 
 		addrinfo	info;
 
-		int			sock = -1;
-		bool		sockOpen = false;
-		bool		sockCreated = false;
-		bool		sockBound = false;
-		bool		sockConnected = false;
+		int			sock			= -1;
+		bool		sockOpen		= false;
+		bool		sockCreated		= false;
+		bool		sockBound		= false;
+		bool		sockConnected	= false;
 
 	public:
 		TCPSocket();
@@ -56,6 +56,7 @@ private:
 		void connect(std::string, int);
 		void listen(int);
 		std::shared_ptr<TCPSocket> accept();
+		void send(const char*, unsigned, int);
 		bool receive(char*, int, int);
 		void close();
 	};
