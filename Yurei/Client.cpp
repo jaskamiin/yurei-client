@@ -10,6 +10,11 @@
 
 Client::TCPSocket::TCPSocket()
 {
+	#ifdef _WIN32
+		WSADATA wsadata;
+		WSAStartup(MAKEWORD(1, 1), &wsadata);
+	#endif
+
 	memset(&info, 0, sizeof info);
 	info.ai_family		= AF_UNSPEC;
 	info.ai_socktype	= SOCK_STREAM;
@@ -31,6 +36,7 @@ Client::TCPSocket::TCPSocket(int family, int flags)
 	sockCreated = true;
 }
 
+
 Client::TCPSocket::TCPSocket(int sock, addrinfo info, bool bound, bool connected)
 {
 	this->sock		= sock;
@@ -39,10 +45,17 @@ Client::TCPSocket::TCPSocket(int sock, addrinfo info, bool bound, bool connected
 	sockConnected	= connected;
 }
 
+
 Client::TCPSocket::~TCPSocket()
 {
 	if (sockOpen) this->close();
+
+	#ifdef _WIN32
+		WSACleanup();
+	#endif
+
 }
+
 
 void Client::TCPSocket::bind(int port)
 {
@@ -152,6 +165,7 @@ void Client::TCPSocket::send(const char* data, unsigned len, int flags)
 	}
 }
 
+
 bool Client::TCPSocket::receive(char* msg, int len, int flags)
 {
 	int status = ::recv(sock, msg, len, flags);
@@ -181,7 +195,6 @@ void Client::TCPSocket::close()
 }
 
 
-
 void Client::TCPSocket::setInfo(int port){ setInfo("null", port); }
 
 
@@ -203,6 +216,8 @@ void Client::TCPSocket::openSocket(addrinfo* info)
 	if (sock == -1) throw 0;
 }
 
+
+
 /*
 *
 *	Main Client implementation
@@ -219,50 +234,6 @@ Client::~Client()
 }
 
 
-int Client::sock_init()
-{
-	#ifdef _WIN32
-		WSADATA wsadata;
-		return WSAStartup(MAKEWORD(1,1), &wsadata);
-	#else
-		return 0;
-	#endif
-}
-
-
-int Client::sock_quit()
-{
-	#ifdef _WIN32
-		return WSACleanup();
-	#else
-		return 0;
-	#endif
-}
-
-int Client::sock_close(SOCKET sock)
-{
-	int status = 0;
-
-	#ifdef _WIN32
-		status = shutdown(sock, SD_BOTH);
-		if (status == 0)
-			status = closesocket(sock);
-	#else
-		status = shutdown(sock, SHUT_RDWR);
-		if (status == 0)
-			status = close(sock);
-	#endif
-
-	return status;
-}
-
 int Client::start()
 {
-	try 
-	{
-		if (this->sock_init() != 0)
-			throw CLIENT_BAD_INIT;
-	} catch (EXCEPTION e) {
-
-	}
 }
