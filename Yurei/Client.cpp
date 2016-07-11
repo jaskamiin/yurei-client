@@ -52,7 +52,7 @@ void Client::TCPSocket::bind(int port)
 
 	addrinfo* result;
 
-	for (result = &info; result != NULL; result = info.ai_next)
+	for (result = &info; result != nullptr; result = info.ai_next)
 	{
 		if (!sockCreated)
 		{
@@ -79,7 +79,7 @@ void Client::TCPSocket::connect(std::string addr, int port)
 
 	addrinfo* result;
 
-	for (result = &info; result != NULL; result = info.ai_next)
+	for (result = &info; result != nullptr; result = info.ai_next)
 	{
 		if (!sockCreated)
 		{
@@ -181,15 +181,12 @@ void Client::TCPSocket::close()
 }
 
 
-void Client::TCPSocket::setInfo(int port)
-{
-	setInfo("null", port);
-}
+void Client::TCPSocket::setInfo(int port){ setInfo("null", port); }
 
 
 void Client::TCPSocket::setInfo(std::string addr, int port)
 {
-	const char* charAddr = (addr == "null") ? NULL : addr.c_str();
+	const char* charAddr = (addr == "null") ? nullptr : addr.c_str();
 	
 	addrinfo hints = info;
 	addrinfo* pInfo = &info;
