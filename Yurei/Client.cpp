@@ -180,6 +180,31 @@ void Client::TCPSocket::close()
 	}
 }
 
+
+void Client::TCPSocket::setInfo(int port)
+{
+	setInfo("null", port);
+}
+
+
+void Client::TCPSocket::setInfo(std::string addr, int port)
+{
+	const char* charAddr = (addr == "null") ? NULL : addr.c_str();
+	
+	addrinfo hints = info;
+	addrinfo* pInfo = &info;
+
+	int status = getaddrinfo(charAddr, std::to_string(port).c_str(), &hints, &pInfo);
+	if (status != 0) throw 0;
+}
+
+
+void Client::TCPSocket::openSocket(addrinfo* info)
+{
+	sock = socket(info->ai_family, info->ai_socktype, info->ai_protocol);
+	if (sock == -1) throw 0;
+}
+
 /*
 *
 *	Main Client implementation
