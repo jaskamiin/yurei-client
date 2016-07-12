@@ -53,7 +53,6 @@ Client::TCPSocket::~TCPSocket()
 	#ifdef _WIN32
 		WSACleanup();
 	#endif
-
 }
 
 
@@ -236,4 +235,5 @@ Client::~Client()
 
 int Client::start()
 {
+	return 0;
 }
