@@ -1,5 +1,34 @@
 #include "Bencoder.h"
 
+
+Bencoder::List::List()
+{
+	list.clear();
+}
+
+Bencoder::List::~List()
+{
+
+}
+
+Bencoder::List* Bencoder::List::read(std::string content, int idx)
+{
+	if (content.at(idx) == 'l') idx++;
+	List list;
+
+	while (content.at(idx) != 'e')
+		list.add(decode(content, idx));
+
+	idx++;
+	return &list;
+}
+
+void Bencoder::List::add(Element obj)
+{
+	this->list.push_back(obj);
+}
+
+
 Bencoder::Bencoder()
 {
 
@@ -11,6 +40,17 @@ Bencoder::~Bencoder()
 }
 
 
+Element Bencoder::decode(std::string content, int idx)
+{
+	char curr = content[idx];
+
+	if (curr == 'l')
+		return *List::read(content, idx);
+		
+}
+
+
+//Note: BENCODE_FAILURE exception is a placeholder for more specific error messages
 
 int Bencoder::bdecode(std::string data)
 {
@@ -25,7 +65,7 @@ int Bencoder::bdecode(std::string data)
 		for (int i = 0; i < data_length; ++i)
 		{
 
-			char current_token = data[i];
+			char current_token = data[i]; //use this where possible for readability
 			
 			//current token `i` will decode integer
 			if (current_token == 'i')
@@ -37,21 +77,30 @@ int Bencoder::bdecode(std::string data)
 				//decode the integer
 				found_int = decode_int(data, &(++i));
 
-				printf("%lld\n", found_int);
 
 				//make sure the index didn't go out of range
 				if (i > data_length) throw BOUNDS_ERROR;
 				if (data[i] != 'e') throw BENCODE_FAILURE;
 
-				//parse to whatever format needed
+				//parse to whatever format needed.. 
+				printf("%lld\n", found_int);
 
 			}
 			else if (isdigit(current_token))
 			{
-				char* end;
-				long long length = strtoll(&data[i] , &end, 10);
+				//get length of bencoded string
+				long long length = decode_int(data, &i);
 
 				//if the number isn't followed by `:`, error 
+				if (data[i++] != ':') throw BENCODE_FAILURE;
+				
+				found_str = data.substr(i, length);
+
+				i += (length-1);
+
+				//parse to whatever format needed
+				printf("%s\n", found_str.c_str());
+
 
 			}
 			else if (current_token == 'l' || current_token == 'd')
@@ -95,14 +144,18 @@ int Bencoder::bdecode(std::string data)
 	return BENCODE_SUCCESS;
 }
 
-
 long long Bencoder::decode_int(std::string data, int* index)
 {
 	//get integer from string
 	long long retval = strtoll(&data[*index], NULL, 10);
 
-	//index now points at `e`
+	//index now points to position after number
 	*index += count_digits(retval);
 
 	return retval;
+}
+
+std::string Bencoder::decode_string(std::string data, int* index)
+{
+	return "";
 }
