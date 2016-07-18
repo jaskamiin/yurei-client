@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstdint>
 #include <cstdlib>
 #include <ctime>
 #include <fstream>
@@ -18,14 +19,14 @@ private:
 	class Integer : public Element 
 	{
 	private:
-		long long integer;
+		int64_t integer;
 	public:
-		Integer();
-		Integer(long long i) : integer(i) {}
-		~Integer();
+		Integer() {};
+		Integer(int64_t i) : integer(i) {}
+		~Integer() {};
 
 		static Integer* read(std::string, int&);
-		long long get() { return integer; };
+		int64_t get() { return integer; };
 	};
 
 	class String : public Element
@@ -33,9 +34,9 @@ private:
 	private:
 		std::string string;
 	public:
-		String();
+		String() {};
 		String(std::string str) : string(str) {}
-		~String();
+		~String() {};
 
 		static String* read(std::string, int&);
 		std::string get() { return string; };
@@ -46,8 +47,8 @@ private:
 	private:
 		std::vector<Element> list;
 	public:
-		List();
-		~List();
+		List() {};
+		~List() {};
 
 		static List* read(std::string, int&);
 		void add(Element obj) { this->list.push_back(obj); };
@@ -58,8 +59,8 @@ private:
 	private:
 		std::map<std::string, Element> dict;
 	public:
-		Dict();
-		~Dict();
+		Dict(){};
+		~Dict(){};
 
 		static Dict* read(std::string, int&);
 		void add(std::string key, Element val) { dict.insert({ key, val }); };
@@ -67,8 +68,8 @@ private:
 
 		
 public:
-	Bencoder();
-	~Bencoder();
+	Bencoder() {};
+	~Bencoder() {};
 
 	static Element decode(std::string, int&);
 

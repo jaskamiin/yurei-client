@@ -2,8 +2,6 @@
 
 
 /*INTEGER class definitions*/
-Bencoder::Integer::Integer() {}
-Bencoder::Integer::~Integer() {}
 
 Bencoder::Integer* Bencoder::Integer::read(std::string content, int& idx)
 {
@@ -19,36 +17,26 @@ Bencoder::Integer* Bencoder::Integer::read(std::string content, int& idx)
 
 
 /*STRING class definitions*/
-Bencoder::String::String() {}
-Bencoder::String::~String() {}
 
 Bencoder::String* Bencoder::String::read(std::string content, int& idx)
 {
-	long long len = (Integer::read(content, idx))->get();
+	int64_t len = (Integer::read(content, idx))->get();
 	
-	if (content.at(idx) == ':')
-	{
-		String data (content.substr(++idx, len));
-		idx += len;
-		return &data;
-	}
+	if (content.at(idx) != ':')
+		throw BENCODE_STR_BAD_FORMAT;
 	
-	throw BENCODE_STR_BAD_FORMAT;
+	String data (content.substr(++idx, len));
+	idx += len;
+	return &data;
 }
 
 
 /*LIST class definitions*/
 
-Bencoder::List::List()
-{
-	list.clear();
-}
-
-Bencoder::List::~List(){}
-
 Bencoder::List* Bencoder::List::read(std::string content, int& idx)
 {
 	if (content.at(idx) == 'l') idx++;
+
 	List list;
 
 	while (content.at(idx) != 'e')
@@ -60,9 +48,6 @@ Bencoder::List* Bencoder::List::read(std::string content, int& idx)
 
 
 /*DICT class definitions*/
-
-Bencoder::Dict::Dict(){}
-Bencoder::Dict::~Dict(){}
 
 Bencoder::Dict* Bencoder::Dict::read(std::string content, int& idx)
 {
@@ -79,10 +64,9 @@ Bencoder::Dict* Bencoder::Dict::read(std::string content, int& idx)
 	return &dict;
 }
 	
-/*BENCODER class definitions*/
 
-Bencoder::Bencoder(){}
-Bencoder::~Bencoder(){}
+
+/*BENCODER class definitions*/
 
 Element Bencoder::decode(std::string content, int& idx)
 {
