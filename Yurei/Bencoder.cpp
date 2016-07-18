@@ -119,7 +119,7 @@ int Bencoder::bdecode(std::string data)
 				if (data[i + 1] != '-' && !isdigit(data[i + 1])) throw BENCODE_INT_NONE_FOUND;
 				
 				//decode the integer
-				found_int = decode_int(data, &(++i));
+				found_int = decode_int(data, (++i));
 
 
 				//make sure the index didn't go out of range
@@ -133,7 +133,7 @@ int Bencoder::bdecode(std::string data)
 			else if (isdigit(current_token))
 			{
 				//get length of bencoded string
-				long long length = decode_int(data, &i);
+				long long length = decode_int(data, i);
 
 				//if the number isn't followed by `:`, error 
 				if (data[i++] != ':') throw BENCODE_FAILURE;
@@ -188,18 +188,26 @@ int Bencoder::bdecode(std::string data)
 	return BENCODE_SUCCESS;
 }
 
-long long Bencoder::decode_int(std::string data, int& index)
+long long Bencoder::decode_int(std::string content, int& idx)
 {
 	//get integer from string
-	long long retval = strtoll(&data[index], NULL, 10);
+	long long retval = strtoll(&content[idx], NULL, 10);
 
 	//index now points to position after number
-	index += count_digits(retval);
+	idx += count_digits(retval);
 
 	return retval;
 }
 
-std::string Bencoder::decode_string(std::string data, int& index)
+std::string Bencoder::decode_string(std::string content, int& idx)
 {
-	return "";
+	long long len = decode_int(content, idx);
+
+	if (content.at(idx) == ':') idx++;
+
+	std::string data = content.substr(idx, len);
+
+	idx += len;
+
+	return data;
 }
