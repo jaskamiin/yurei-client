@@ -1,6 +1,42 @@
 #include "Bencoder.h"
 
 
+/*INTEGER class definitions*/
+Bencoder::Integer::Integer() {}
+Bencoder::Integer::~Integer() {}
+
+Bencoder::Integer* Bencoder::Integer::read(std::string content, int& idx)
+{
+	//get integer from string
+	Integer i;
+	i.integer = strtoll(&content[idx], NULL, 10);
+
+	//index now points to position after number
+	idx += count_digits(i.integer);
+
+	return &i;
+}
+
+
+/*STRING class definitions*/
+Bencoder::String::String() {}
+Bencoder::String::~String() {}
+
+Bencoder::String* Bencoder::String::read(std::string content, int& idx)
+{
+	long long len = (Bencoder::Integer::read(content, idx))->get();
+	
+	if (content.at(idx) == ':')
+	{
+		String data (content.substr(++idx, len));
+		idx += len;
+		return &data;
+	}
+	else throw BENCODE_STR_BAD_FORMAT;
+
+}
+
+
 /*LIST class definitions*/
 
 Bencoder::List::List()
@@ -81,10 +117,11 @@ Element Bencoder::decode(std::string content, int& idx)
 	else if (curr == 'i')
 	{
 		std::size_t e = content.find("e", ++idx);
+		if (e == std::string::npos) throw BENCODE_INT_BAD_FORMAT;
+				
+		long long retInt = decode_int(content, idx);
+		if 
 
-		if (e == std::string::npos) throw 0;
-
-		long long retInt = strtoll(&content[idx], NULL, 10);
 	}
 	else if (isdigit(curr))
 	{
@@ -186,28 +223,4 @@ int Bencoder::bdecode(std::string data)
 	}
 
 	return BENCODE_SUCCESS;
-}
-
-long long Bencoder::decode_int(std::string content, int& idx)
-{
-	//get integer from string
-	long long retval = strtoll(&content[idx], NULL, 10);
-
-	//index now points to position after number
-	idx += count_digits(retval);
-
-	return retval;
-}
-
-std::string Bencoder::decode_string(std::string content, int& idx)
-{
-	long long len = decode_int(content, idx);
-
-	if (content.at(idx) == ':') idx++;
-
-	std::string data = content.substr(idx, len);
-
-	idx += len;
-
-	return data;
 }
