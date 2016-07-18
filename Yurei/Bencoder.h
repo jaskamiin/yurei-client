@@ -25,7 +25,7 @@ private:
 		Integer(int64_t i) : integer(i) {}
 		~Integer() {};
 
-		static Integer* read(std::string, int&);
+		static Integer read(std::string, int&);
 		int64_t get() { return integer; };
 	};
 
@@ -38,7 +38,7 @@ private:
 		String(std::string str) : string(str) {}
 		~String() {};
 
-		static String* read(std::string, int&);
+		static String read(std::string, int&);
 		std::string get() { return string; };
 	};
 
@@ -50,7 +50,7 @@ private:
 		List() {};
 		~List() {};
 
-		static List* read(std::string, int&);
+		static List read(std::string, int&);
 		void add(Element obj) { this->list.push_back(obj); };
 	};
 
@@ -62,7 +62,7 @@ private:
 		Dict(){};
 		~Dict(){};
 
-		static Dict* read(std::string, int&);
+		static Dict read(std::string, int&);
 		void add(std::string key, Element val) { dict.insert({ key, val }); };
 	};
 
