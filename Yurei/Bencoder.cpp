@@ -58,11 +58,6 @@ Bencoder::List* Bencoder::List::read(std::string content, int& idx)
 	return &list;
 }
 
-void Bencoder::List::add(Element obj)
-{
-	this->list.push_back(obj);
-}
-
 
 /*DICT class definitions*/
 
@@ -83,12 +78,7 @@ Bencoder::Dict* Bencoder::Dict::read(std::string content, int& idx)
 
 	return &dict;
 }
-
-void Bencoder::Dict::add(std::string key, Element val)
-{
-	dict.insert({ key, val });
-}
-
+	
 /*BENCODER class definitions*/
 
 Bencoder::Bencoder(){}

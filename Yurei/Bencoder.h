@@ -50,7 +50,7 @@ private:
 		~List();
 
 		static List* read(std::string, int&);
-		void add(Element);
+		void add(Element obj) { this->list.push_back(obj); };
 	};
 	
 	class Dict : public Element
@@ -62,7 +62,7 @@ private:
 		~Dict();
 
 		static Dict* read(std::string, int&);
-		void add(std::string, Element);
+		void add(std::string key, Element val) { dict.insert({ key, val }); };
 	};
 
 		
