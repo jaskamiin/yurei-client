@@ -24,7 +24,7 @@ Bencoder::String::~String() {}
 
 Bencoder::String* Bencoder::String::read(std::string content, int& idx)
 {
-	long long len = (Bencoder::Integer::read(content, idx))->get();
+	long long len = (Integer::read(content, idx))->get();
 	
 	if (content.at(idx) == ':')
 	{
@@ -32,8 +32,8 @@ Bencoder::String* Bencoder::String::read(std::string content, int& idx)
 		idx += len;
 		return &data;
 	}
-	else throw BENCODE_STR_BAD_FORMAT;
-
+	
+	throw BENCODE_STR_BAD_FORMAT;
 }
 
 
@@ -96,9 +96,6 @@ Bencoder::~Bencoder(){}
 
 Element Bencoder::decode(std::string content, int& idx)
 {
-	char curr = content[idx];
-
-
 	switch (content[idx])
 	{
 	case 'i':
@@ -112,6 +109,7 @@ Element Bencoder::decode(std::string content, int& idx)
 		return *(String::read(content, idx));
 	}
 		
+	throw BENCODE_FAILURE;
 }
 
 
