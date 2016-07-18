@@ -7,11 +7,11 @@ Bencoder::Integer::~Integer() {}
 
 Bencoder::Integer* Bencoder::Integer::read(std::string content, int& idx)
 {
-	//get integer from string
-	Integer i;
-	i.integer = strtoll(&content[idx], NULL, 10);
+	std::size_t e = content.find("e", ++idx);
+	if (e == std::string::npos) throw BENCODE_INT_BAD_FORMAT;
 
-	//index now points to position after number
+	Integer i (strtoll(&content[idx], NULL, 10));
+
 	idx += count_digits(i.integer);
 
 	return &i;
@@ -76,7 +76,7 @@ Bencoder::Dict* Bencoder::Dict::read(std::string content, int& idx)
 
 	while (content.at(idx) != 'e')
 	{
-		std::string key = decode_string(content, idx);
+		std::string key = String::read(content, idx)->get();
 		Element value	= decode(content, idx);
 		dict.add(key, value);
 	}
@@ -91,41 +91,25 @@ void Bencoder::Dict::add(std::string key, Element val)
 
 /*BENCODER class definitions*/
 
-Bencoder::Bencoder()
-{
-
-}
-
-
-Bencoder::~Bencoder()
-{
-}
-
+Bencoder::Bencoder(){}
+Bencoder::~Bencoder(){}
 
 Element Bencoder::decode(std::string content, int& idx)
 {
 	char curr = content[idx];
 
-	if (curr == 'l')
+
+	switch (content[idx])
 	{
+	case 'i':
+		return *(Integer::read(content, idx));
+	case 'l':
 		return *(List::read(content, idx));
-	}
-	else if (curr == 'd')
-	{
-
-	}
-	else if (curr == 'i')
-	{
-		std::size_t e = content.find("e", ++idx);
-		if (e == std::string::npos) throw BENCODE_INT_BAD_FORMAT;
-				
-		long long retInt = decode_int(content, idx);
-		if 
-
-	}
-	else if (isdigit(curr))
-	{
-
+	case 'd':
+		return *(Dict::read(content, idx));
+	default:
+		if (!isdigit(content[idx])) break;
+		return *(String::read(content, idx));
 	}
 		
 }
@@ -137,58 +121,6 @@ int Bencoder::bdecode(std::string data)
 {
 	try{
 		
-		std::string::iterator begin = data.begin();
-		size_t data_length = data.length();	
-
-		long long	found_int;
-		std::string found_str;
-
-		for (int i = 0; i < data_length; ++i)
-		{
-
-			char current_token = data[i]; //use this where possible for readability
-			
-			//current token `i` will decode integer
-			if (current_token == 'i')
-			{
-				//if there's no integer found, throw error
-				if (data[i + 1] == 'e') throw BENCODE_INT_BAD_FORMAT;
-				if (data[i + 1] != '-' && !isdigit(data[i + 1])) throw BENCODE_INT_NONE_FOUND;
-				
-				//decode the integer
-				found_int = decode_int(data, (++i));
-
-
-				//make sure the index didn't go out of range
-				if (i > data_length) throw BOUNDS_ERROR;
-				if (data[i] != 'e') throw BENCODE_FAILURE;
-
-				//parse to whatever format needed.. 
-				printf("%lld\n", found_int);
-
-			}
-			else if (isdigit(current_token))
-			{
-				//get length of bencoded string
-				long long length = decode_int(data, i);
-
-				//if the number isn't followed by `:`, error 
-				if (data[i++] != ':') throw BENCODE_FAILURE;
-				
-				found_str = data.substr(i, length);
-
-				i += (length-1);
-
-				//parse to whatever format needed
-				printf("%s\n", found_str.c_str());
-
-
-			}
-			else if (current_token == 'l' || current_token == 'd')
-			{
-
-			}
-		}
 
 	} catch (EXCEPTION ERROR) {
 		// Open error log file and print error message to it

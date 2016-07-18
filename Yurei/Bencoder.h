@@ -21,6 +21,7 @@ private:
 		long long integer;
 	public:
 		Integer();
+		Integer(long long i) : integer(i) {}
 		~Integer();
 
 		static Integer* read(std::string, int&);
