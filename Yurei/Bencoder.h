@@ -25,7 +25,7 @@ private:
 		List();
 		~List();
 
-		static List* read(std::string, int);
+		static List* read(std::string, int&);
 		void add(Element);
 	};
 	
@@ -37,27 +37,22 @@ private:
 		Dict();
 		~Dict();
 
-		char*		key;
-		char		val_id_d;
-
-		long long	INT;
-		std::string STR;
-		List		LIST;
-		Dict*		DICT;
+		static Dict* read(std::string, int&);
+		void add(std::string, Element);
 	};
 
 
 
 //functions
-	long long decode_int(std::string, int*);
-	std::string decode_string(std::string, int*);
+	static long long	decode_int(std::string, int&);
+	static std::string	decode_string(std::string, int&);
 	
 
 public:
 	Bencoder();
 	~Bencoder();
 
-	static Element decode(std::string, int);
+	static Element decode(std::string, int&);
 
 	/*return decoded object*/
 	int bdecode(std::string);

@@ -1,17 +1,16 @@
 #include "Bencoder.h"
 
 
+/*LIST class definitions*/
+
 Bencoder::List::List()
 {
 	list.clear();
 }
 
-Bencoder::List::~List()
-{
+Bencoder::List::~List(){}
 
-}
-
-Bencoder::List* Bencoder::List::read(std::string content, int idx)
+Bencoder::List* Bencoder::List::read(std::string content, int& idx)
 {
 	if (content.at(idx) == 'l') idx++;
 	List list;
@@ -29,6 +28,33 @@ void Bencoder::List::add(Element obj)
 }
 
 
+/*DICT class definitions*/
+
+Bencoder::Dict::Dict(){}
+Bencoder::Dict::~Dict(){}
+
+Bencoder::Dict* Bencoder::Dict::read(std::string content, int& idx)
+{
+	if (content.at(idx) == 'd') idx++;
+	Dict dict;
+
+	while (content.at(idx) != 'e')
+	{
+		std::string key = decode_string(content, idx);
+		Element value	= decode(content, idx);
+		dict.add(key, value);
+	}
+
+	return &dict;
+}
+
+void Bencoder::Dict::add(std::string key, Element val)
+{
+	dict.insert({ key, val });
+}
+
+/*BENCODER class definitions*/
+
 Bencoder::Bencoder()
 {
 
@@ -40,12 +66,30 @@ Bencoder::~Bencoder()
 }
 
 
-Element Bencoder::decode(std::string content, int idx)
+Element Bencoder::decode(std::string content, int& idx)
 {
 	char curr = content[idx];
 
 	if (curr == 'l')
-		return *List::read(content, idx);
+	{
+		return *(List::read(content, idx));
+	}
+	else if (curr == 'd')
+	{
+
+	}
+	else if (curr == 'i')
+	{
+		std::size_t e = content.find("e", ++idx);
+
+		if (e == std::string::npos) throw 0;
+
+		long long retInt = strtoll(&content[idx], NULL, 10);
+	}
+	else if (isdigit(curr))
+	{
+
+	}
 		
 }
 
@@ -144,18 +188,18 @@ int Bencoder::bdecode(std::string data)
 	return BENCODE_SUCCESS;
 }
 
-long long Bencoder::decode_int(std::string data, int* index)
+long long Bencoder::decode_int(std::string data, int& index)
 {
 	//get integer from string
-	long long retval = strtoll(&data[*index], NULL, 10);
+	long long retval = strtoll(&data[index], NULL, 10);
 
 	//index now points to position after number
-	*index += count_digits(retval);
+	index += count_digits(retval);
 
 	return retval;
 }
 
-std::string Bencoder::decode_string(std::string data, int* index)
+std::string Bencoder::decode_string(std::string data, int& index)
 {
 	return "";
 }
