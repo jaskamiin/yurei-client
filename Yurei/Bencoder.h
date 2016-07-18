@@ -15,8 +15,8 @@
 class Bencoder
 {
 private:
-	
-	class Integer : public Element 
+
+	class Integer : public Element
 	{
 	private:
 		int64_t integer;
@@ -53,7 +53,7 @@ private:
 		static List* read(std::string, int&);
 		void add(Element obj) { this->list.push_back(obj); };
 	};
-	
+
 	class Dict : public Element
 	{
 	private:
@@ -66,12 +66,16 @@ private:
 		void add(std::string key, Element val) { dict.insert({ key, val }); };
 	};
 
-		
+
 public:
 	Bencoder() {};
 	~Bencoder() {};
 
-	static Element decode(std::string, int&);
+	static std::vector<Element>
+		decode(std::string);
+
+	static Element
+		decode(std::string, int&);
 
 	/*return decoded object*/
 	int bdecode(std::string);

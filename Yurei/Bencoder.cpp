@@ -68,6 +68,19 @@ Bencoder::Dict* Bencoder::Dict::read(std::string content, int& idx)
 
 /*BENCODER class definitions*/
 
+std::vector<Element> Bencoder::decode(std::string content)
+{
+	int idx = 0;
+	std::vector<Element> elements;
+	std::size_t len = content.length();
+	
+	while (idx != len)
+		elements.push_back(decode(content, idx));
+
+	return elements;
+}
+
+
 Element Bencoder::decode(std::string content, int& idx)
 {
 	switch (content[idx])
