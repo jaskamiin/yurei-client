@@ -14,9 +14,32 @@
 class Bencoder
 {
 private:
-
-	enum val_id {INT, STR, LIST, DICT} val_id;
 	
+	class Integer : public Element 
+	{
+	private:
+		long long integer;
+	public:
+		Integer();
+		~Integer();
+
+		static Integer* read(std::string, int&);
+		long long get() { return integer; };
+	};
+
+	class String : public Element
+	{
+	private:
+		std::string string;
+	public:
+		String();
+		String(std::string str) : string(str) {}
+		~String();
+
+		static String* read(std::string, int&);
+		std::string get() { return string; };
+	};
+
 	class List : public Element
 	{
 	private:
@@ -41,13 +64,7 @@ private:
 		void add(std::string, Element);
 	};
 
-
-
-//functions
-	static long long	decode_int(std::string, int&);
-	static std::string	decode_string(std::string, int&);
-	
-
+		
 public:
 	Bencoder();
 	~Bencoder();
@@ -56,5 +73,4 @@ public:
 
 	/*return decoded object*/
 	int bdecode(std::string);
-
 };
