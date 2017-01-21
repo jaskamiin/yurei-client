@@ -1,0 +1,23 @@
+#include "../include/Element.h"
+
+
+Element::Element()
+{
+}
+
+
+Element::~Element()
+{
+}
+
+std::string Element::encode(){
+  return "";
+}
+
+void Element::print(){
+
+}
+
+short Element::get_type(){
+  return -1;
+}
